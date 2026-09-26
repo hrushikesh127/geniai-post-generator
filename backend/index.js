@@ -1,0 +1,32 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+import geminiRoutes from "./routes/geminiRoutes.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Enable CORS and JSON parsing
+app.use(cors());
+app.use(express.json());
+
+// Gemini API routes
+app.use("/api/gemini", geminiRoutes);
+
+// Health check route
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "AI Social Media Content Generator API is running"
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});

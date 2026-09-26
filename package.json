@@ -1,0 +1,12 @@
+{
+  "name": "social-media-content-generator",
+  "version": "1.0.0",
+  "description": "AI Social Media Content Generator with React, Express, and Google Gemini API",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "npm run start --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}
