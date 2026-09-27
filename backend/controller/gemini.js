@@ -7,8 +7,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
-// Centralized model configuration - easily switchable from one place or via environment variable
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+// Centralized model configuration - valid official Gemini models: gemini-2.5-flash, gemini-2.0-flash, gemini-1.5-flash
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 // Lazy-initialize GoogleGenAI so that environment variables are guaranteed to be loaded
 let aiClient = null;
@@ -85,9 +85,9 @@ export const askGemini = async (req, res) => {
       });
     }
 
-    // Generic server / Gemini error
+    // Generic server / Gemini error - return actual message for easier debugging
     return res.status(500).json({
-      message: "Failed to generate content"
+      message: errorMessage || "Failed to generate content. Please verify your GEMINI_API_KEY."
     });
   }
 };
