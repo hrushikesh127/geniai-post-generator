@@ -8,7 +8,7 @@ dotenv.config();
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
 // Centralized model configuration - valid official Gemini models: gemini-2.5-flash, gemini-2.0-flash, gemini-1.5-flash
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-3.8-flash";
 
 // Lazy-initialize GoogleGenAI so that environment variables are guaranteed to be loaded
 let aiClient = null;
