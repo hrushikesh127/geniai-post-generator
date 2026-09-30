@@ -1,9 +1,9 @@
 import express from "express";
-import { askGemini } from "../controller/gemini.js";
+import { askGroq } from "../controller/groq.js";
 
 const router = express.Router();
 
 // POST /api/gemini
-router.post("/", askGemini);
+router.post("/", askGroq);
 
 export default router;

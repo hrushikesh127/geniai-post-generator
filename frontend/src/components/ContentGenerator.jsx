@@ -153,7 +153,7 @@ Do not include unnecessary explanations.
 
     try {
       // Axios request to backend API
-      const response = await api.post("/gemini", {
+      const response = await api.post("/groq", {
         prompt
       });
 
@@ -217,7 +217,7 @@ Do not include unnecessary explanations.
       {/* Header section */}
       <header className="app-header">
         <div className="header-badge">
-          <span className="badge-sparkle">✨</span> Powered by Google Gemini AI
+          <span className="badge-sparkle">✨</span> Powered by Groq AI
         </div>
         <h1 className="header-title">AI Social Media Content Generator</h1>
         <p className="header-subtitle">Create engaging social media content with AI</p>

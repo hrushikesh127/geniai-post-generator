@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import geminiRoutes from "./routes/geminiRoutes.js";
+import groqRoutes from "./routes/groqRoutes.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // Gemini API routes
-app.use("/api/gemini", geminiRoutes);
+app.use("/api/groq", groqRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {

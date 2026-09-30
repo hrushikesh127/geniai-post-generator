@@ -1,35 +1,18 @@
-import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import Groq from "groq-sdk";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
-// Centralized model configuration - valid official Gemini models: gemini-2.5-flash, gemini-2.0-flash, gemini-1.5-flash
-const GEMINI_MODEL = "gemini-3.8-flash";
+const groq = new Groq({
+    apiKey: process.env.GROQ_API_KEY
+});
 
-// Lazy-initialize GoogleGenAI so that environment variables are guaranteed to be loaded
-let aiClient = null;
-function getAiClient() {
-  if (!aiClient) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      console.warn("WARNING: GEMINI_API_KEY is not set in backend/.env!");
-    }
-    aiClient = new GoogleGenAI({
-      apiKey: apiKey || ""
-    });
-  }
-  return aiClient;
-}
 
-/**
- * Controller to handle Gemini social media content generation
- * Route: POST /api/gemini
- */
-export const askGemini = async (req, res) => {
+export const askGroq = async (req, res) => {
   try {
     const { prompt } = req.body;
 
@@ -40,28 +23,33 @@ export const askGemini = async (req, res) => {
       });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
-        message: "Gemini API key is not configured on the server. Please check backend/.env"
+        message: "Groq API key is not configured on the server. Please check backend/.env"
       });
     }
 
-    const ai = getAiClient();
+    
 
     // Call the Google Gemini API using @google/genai SDK
-    const response = await ai.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: prompt
-    });
+    const response = await groq.chat.completions.create({
+    model: "openai/gpt-oss-20b",
+    messages: [
+        {
+            role: "user",
+            content: prompt
+        }
+    ]
+});
 
-    const generatedText = response?.text || "";
+    const generatedText = response?.choices[0].message.content || "";
 
     return res.status(200).json({
       response: generatedText
     });
   } catch (error) {
     // Log detailed errors only in backend terminal (without exposing any secrets)
-    console.error("Gemini API Error:", error?.message || error);
+    console.error("groq API Error:", error?.message || error);
 
     // Check for temporary model availability or overload (503)
     const errorStatus = error?.status || error?.code || error?.error?.code;
@@ -69,7 +57,7 @@ export const askGemini = async (req, res) => {
 
     if (errorStatus === 503 || errorMessage.includes("503") || errorMessage.toLowerCase().includes("overloaded")) {
       return res.status(503).json({
-        message: "Gemini AI model is temporarily unavailable. Please try again in a few moments."
+        message: "groq AI model is temporarily unavailable. Please try again in a few moments."
       });
     }
 
